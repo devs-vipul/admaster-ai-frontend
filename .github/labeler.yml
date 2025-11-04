@@ -1,0 +1,54 @@
+# Auto-label PRs based on changed files
+
+"📦 dependencies":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/package.json"
+          - "**/package-lock.json"
+          - "**/yarn.lock"
+          - "**/pnpm-lock.yaml"
+
+"🎨 UI/UX":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/components/**"
+          - "**/app/**/*.tsx"
+          - "**/*.css"
+
+"⚙️ config":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*config*"
+          - "**/.env*"
+          - "**/tsconfig.json"
+
+"📱 web-app":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "apps/web/**"
+
+"📚 docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "apps/docs/**"
+          - "**/*.md"
+
+"🧪 tests":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.test.*"
+          - "**/*.spec.*"
+          - "**/__tests__/**"
+
+"🔧 tooling":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+          - "**/.eslintrc*"
+          - "**/.prettierrc*"
+          - "**/turbo.json"
+
+"📦 packages":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/**"

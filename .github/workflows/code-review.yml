@@ -1,0 +1,95 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  # Job 1: Code Review Summary
+  review-summary:
+    name: 📝 PR Review Summary
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📊 Generate PR summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            // Analyze file types
+            const filesByType = {};
+            files.forEach(file => {
+              const ext = file.filename.split('.').pop();
+              filesByType[ext] = (filesByType[ext] || 0) + 1;
+            });
+
+            // Check for important files
+            const hasPackageJson = files.some(f => f.filename.includes('package.json'));
+            const hasLockFile = files.some(f => f.filename.includes('package-lock.json'));
+            const hasEnvFile = files.some(f => f.filename.includes('.env'));
+            const hasConfigChange = files.some(f => 
+              f.filename.includes('config') || 
+              f.filename.includes('tsconfig') ||
+              f.filename.includes('tailwind.config')
+            );
+
+            // Build summary
+            let summary = `## 📊 PR Analysis\n\n`;
+            summary += `### 📈 Statistics\n`;
+            summary += `- **Files Changed:** ${files.length}\n`;
+            summary += `- **Lines Added:** +${pr.additions}\n`;
+            summary += `- **Lines Deleted:** -${pr.deletions}\n`;
+            summary += `- **Commits:** ${pr.commits}\n\n`;
+
+            summary += `### 📂 File Types Changed\n`;
+            Object.entries(filesByType).forEach(([ext, count]) => {
+              summary += `- \`.${ext}\`: ${count} file(s)\n`;
+            });
+
+            summary += `\n### ⚠️ Important Changes Detected\n`;
+            const warnings = [];
+            if (hasPackageJson) warnings.push('📦 Package dependencies modified');
+            if (hasLockFile) warnings.push('🔒 Lock file updated');
+            if (hasEnvFile) warnings.push('⚠️ Environment file changed (verify secrets)');
+            if (hasConfigChange) warnings.push('⚙️ Configuration files modified');
+
+            if (warnings.length > 0) {
+              warnings.forEach(w => summary += `- ${w}\n`);
+            } else {
+              summary += `- ✅ No critical file changes detected\n`;
+            }
+
+            summary += `\n### 📝 Review Checklist\n`;
+            summary += `- [ ] Code follows project conventions\n`;
+            summary += `- [ ] Tests added/updated (if applicable)\n`;
+            summary += `- [ ] Documentation updated (if needed)\n`;
+            summary += `- [ ] No console.log or debug code\n`;
+            summary += `- [ ] TypeScript types are correct\n`;
+            summary += `- [ ] All CI checks pass\n`;
+
+            // Post comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: summary
+            });

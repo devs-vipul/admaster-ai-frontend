@@ -13,7 +13,8 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "AdMaster AI - AI that thinks like a marketer",
-  description: "AI-powered marketing automation platform that helps brands generate, manage, and optimize ads across Google, Meta, LinkedIn, and Microsoft Ads.",
+  description:
+    "AI-powered marketing automation platform that helps brands generate, manage, and optimize ads across Google, Meta, LinkedIn, and Microsoft Ads.",
 };
 
 export default function RootLayout({
