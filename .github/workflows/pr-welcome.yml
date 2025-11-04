@@ -1,0 +1,72 @@
+name: PR Welcome & Tips
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  welcome:
+    name: 👋 Welcome PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: 👋 Welcome comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prAuthor = context.payload.pull_request.user.login;
+            const prNumber = context.payload.pull_request.number;
+            const prTitle = context.payload.pull_request.title;
+
+            const welcomeMessage = `## 👋 Thanks for your contribution, @${prAuthor}!
+
+Your PR **#${prNumber}: ${prTitle}** is now being reviewed.
+
+### 🤖 Automated Checks Running
+
+The following checks will run automatically:
+- ✅ **Lint Check** - ESLint validation
+- ✅ **Type Check** - TypeScript validation  
+- ✅ **Build Check** - Ensure code builds successfully
+- ✅ **Format Check** - Prettier code formatting
+- ✅ **Security Audit** - Dependency vulnerabilities
+- ✅ **CodeQL Analysis** - Security code scanning
+- ✅ **PR Validation** - Title format and size check
+
+### 📋 Before Merging
+
+Please ensure:
+- [ ] All CI checks pass ✅
+- [ ] Code is properly tested
+- [ ] Documentation is updated (if needed)
+- [ ] No console.log or debug statements
+- [ ] Commits follow [Conventional Commits](https://www.conventionalcommits.org/)
+
+### 💡 Tips
+
+- **PR Title Format:** Use \`type: description\` (e.g., \`feat: add user login\`)
+  - Types: \`feat\`, \`fix\`, \`docs\`, \`style\`, \`refactor\`, \`test\`, \`chore\`
+- **Keep PRs Small:** Aim for < 500 lines changed for easier review
+- **Link Issues:** Reference related issues with \`Fixes #123\` or \`Closes #456\`
+
+### 🚀 What's Next?
+
+1. Wait for CI checks to complete
+2. Address any failed checks
+3. Request review from team members
+4. Respond to review feedback
+5. Merge when approved! 🎉
+
+---
+
+*This is an automated message. Questions? Check our [Contributing Guide](../README.md).*`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: welcomeMessage
+            });
+

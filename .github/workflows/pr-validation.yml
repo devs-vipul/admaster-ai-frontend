@@ -1,0 +1,127 @@
+name: PR Validation
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  # Job 1: PR Title Validation
+  validate-pr-title:
+    name: 🏷️ Validate PR Title
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏷️ Check PR title format
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Types: feat, fix, docs, style, refactor, perf, test, chore
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            chore
+            ci
+            build
+          requireScope: false
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject "{subject}" found in the pull request title "{title}"
+            didn't match the configured pattern. Please ensure that the subject
+            doesn't start with an uppercase character.
+
+  # Job 2: PR Size Check
+  pr-size:
+    name: 📏 Check PR Size
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📏 Check PR size
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            const additions = pr.additions;
+            const deletions = pr.deletions;
+            const changes = additions + deletions;
+
+            console.log(`📊 PR Stats: +${additions} -${deletions} (${changes} total changes)`);
+
+            // Size labels
+            let size = 'XS';
+            let emoji = '🟢';
+            if (changes > 1000) {
+              size = 'XL';
+              emoji = '🔴';
+            } else if (changes > 500) {
+              size = 'L';
+              emoji = '🟠';
+            } else if (changes > 200) {
+              size = 'M';
+              emoji = '🟡';
+            } else if (changes > 50) {
+              size = 'S';
+              emoji = '🟢';
+            }
+
+            core.notice(`${emoji} PR Size: ${size} (${changes} changes)`);
+
+            if (changes > 1000) {
+              core.warning('⚠️ This PR is very large. Consider breaking it into smaller PRs for easier review.');
+            }
+
+  # Job 3: Changed Files Check
+  changed-files:
+    name: 📂 Analyze Changed Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📂 Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v41
+
+      - name: 📊 List changed files
+        run: |
+          echo "📝 Changed files:"
+          echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr ' ' '\n'
+          echo ""
+          echo "📊 Total files changed: ${{ steps.changed-files.outputs.all_changed_files_count }}"
+
+  # Job 4: PR Labels
+  pr-labeler:
+    name: 🏷️ Auto Label PR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: 🏷️ Label based on changed paths
+        uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml
+        continue-on-error: true

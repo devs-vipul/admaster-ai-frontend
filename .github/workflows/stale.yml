@@ -1,0 +1,65 @@
+name: Stale PR Management
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Run daily at midnight UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    name: 🗑️ Mark Stale PRs
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🗑️ Mark stale
+        uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Stale PR settings
+          stale-pr-message: |
+            👋 This PR has been automatically marked as stale because it has not had any activity for 30 days.
+
+            **What happens next?**
+            - This PR will be closed in 7 days if no further activity occurs
+            - Remove the `stale` label or add a comment to keep it open
+
+            If you're still working on this, please:
+            - Rebase on the latest `main` branch
+            - Resolve any merge conflicts
+            - Address review comments
+            - Add a comment with an update
+
+            Thanks for your contribution! 🙏
+
+          close-pr-message: |
+            🤖 This PR has been automatically closed due to inactivity.
+
+            If you'd like to continue working on this:
+            1. Reopen the PR
+            2. Rebase on the latest `main`
+            3. Add a comment with your plan
+
+            Feel free to reach out if you need help! 💪
+
+          days-before-stale: 30
+          days-before-close: 7
+          stale-pr-label: "stale"
+          exempt-pr-labels: "keep-open,in-progress,blocked"
+
+          # Stale issue settings
+          stale-issue-message: |
+            👋 This issue has been automatically marked as stale due to inactivity.
+            It will be closed in 14 days if no further activity occurs.
+
+          close-issue-message: |
+            🤖 This issue has been automatically closed due to inactivity.
+            Feel free to reopen if it's still relevant!
+
+          days-before-issue-stale: 60
+          days-before-issue-close: 14
+          stale-issue-label: "stale"
+          exempt-issue-labels: "keep-open,bug,enhancement"
