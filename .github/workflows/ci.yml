@@ -35,6 +35,9 @@ jobs:
   type-check:
     name: 🔍 Type Check
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -55,6 +58,9 @@ jobs:
   build:
     name: 🏗️ Build Check
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
