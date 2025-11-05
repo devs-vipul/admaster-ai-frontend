@@ -35,6 +35,10 @@ jobs:
   type-check:
     name: 🔍 Type Check
     runs-on: ubuntu-latest
+    env:
+      # Dummy Clerk keys for type checking
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_dummy_key_for_ci_build
+      CLERK_SECRET_KEY: sk_test_dummy_key_for_ci_build
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -55,6 +59,10 @@ jobs:
   build:
     name: 🏗️ Build Check
     runs-on: ubuntu-latest
+    env:
+      # Dummy Clerk keys for build (CI doesn't need real keys)
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_dummy_key_for_ci_build
+      CLERK_SECRET_KEY: sk_test_dummy_key_for_ci_build
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
