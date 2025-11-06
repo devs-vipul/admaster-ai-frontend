@@ -1,9 +1,27 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useAuth } from "@clerk/nextjs";
 import { useCrawlBusinessMutation } from "@/lib/store/api/businessApi";
 import type { CrawlResponse } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { LANGUAGES, findLanguage } from "@/lib/constants/languages";
 
 interface Props {
   businessId: string;
@@ -39,12 +57,9 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
     };
   }, [open, businessId, getToken, crawl]);
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative w-full max-w-3xl rounded-xl border bg-card p-6 shadow-xl">
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent className="max-w-3xl">
         {isLoading && !result ? (
           <div className="py-12 text-center">
             <div className="mb-8 flex justify-center">
@@ -74,9 +89,9 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
               </div>
             </div>
 
-            <h3 className="text-2xl font-semibold mb-4">
+            <DialogTitle className="text-2xl mb-4">
               AdMaster-Crawler is analyzing your business...
-            </h3>
+            </DialogTitle>
 
             <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mb-6">
               <div
@@ -85,21 +100,23 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
               ></div>
             </div>
 
-            <p className="text-sm text-muted-foreground">
+            <DialogDescription>
               Our AI will suggest the best ad platform(s) based on your
               business.
-            </p>
+            </DialogDescription>
           </div>
         ) : (
           <>
-            <h3 className="text-xl font-semibold mb-1">
-              Here is what we learned about your brand
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              AdMaster-Crawler has successfully analyzed your business and will
-              use the following information to create high-performing ad
-              campaigns.
-            </p>
+            <DialogHeader>
+              <DialogTitle>
+                Here is what we learned about your brand
+              </DialogTitle>
+              <DialogDescription>
+                AdMaster-Crawler has successfully analyzed your business and
+                will use the following information to create high-performing ad
+                campaigns.
+              </DialogDescription>
+            </DialogHeader>
           </>
         )}
 
@@ -114,11 +131,13 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
               <div className="md:col-span-1 flex items-center gap-3">
                 {local.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={local.logo_url}
                     alt="Logo"
+                    width={48}
+                    height={48}
                     className="h-12 w-12 rounded-md border object-contain bg-white"
+                    unoptimized
                   />
                 ) : (
                   <div className="h-12 w-12 rounded-md border bg-muted" />
@@ -154,46 +173,48 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
                       }}
                       className="h-9 w-9 rounded-md border"
                     />
-                    <input
+                    <Input
                       value={hex}
                       onChange={(e) => {
                         const next = [...local.brand_colors];
                         next[idx] = e.target.value;
                         setLocal({ ...local, brand_colors: next });
                       }}
-                      className="h-9 w-[110px] rounded-md border bg-background px-2 text-sm"
+                      className="h-9 w-[110px] px-2 text-sm"
                     />
                     {local.brand_colors.length > 1 && (
-                      <button
+                      <Button
                         type="button"
+                        variant="outline"
+                        size="sm"
                         onClick={() => {
                           const next = local.brand_colors.filter(
                             (_, i) => i !== idx,
                           );
                           setLocal({ ...local, brand_colors: next });
                         }}
-                        className="h-9 rounded-md border px-2 text-xs"
                         aria-label="Remove color"
                         title="Remove color"
                       >
                         Remove
-                      </button>
+                      </Button>
                     )}
                   </div>
                 ))}
               </div>
               {local.brand_colors.length < 5 && (
                 <div className="mt-3">
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
+                    size="sm"
                     onClick={() => {
                       const next = [...local.brand_colors, "#14803B"];
                       setLocal({ ...local, brand_colors: next.slice(0, 5) });
                     }}
-                    className="h-9 rounded-md border px-3 text-sm"
                   >
                     Add color
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
@@ -212,7 +233,7 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
                   ].map((tone) => {
                     const selected = local.tone_of_voice.includes(tone);
                     return (
-                      <button
+                      <Button
                         type="button"
                         key={tone}
                         onClick={() => {
@@ -224,15 +245,11 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
                             tone_of_voice: Array.from(set),
                           });
                         }}
-                        className={
-                          "rounded-md border px-3 py-1 text-sm " +
-                          (selected
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-background")
-                        }
+                        variant={selected ? "default" : "outline"}
+                        size="sm"
                       >
                         {tone}
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
@@ -240,35 +257,41 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
 
               <div>
                 <p className="text-sm font-medium mb-2">Language</p>
-                <input
-                  value={local.language}
-                  onChange={(e) =>
-                    setLocal({ ...local, language: e.target.value })
-                  }
-                  className="h-9 rounded-md border bg-background px-2 text-sm"
-                />
+                <Select
+                  value={findLanguage(local?.language)?.code || "en"}
+                  onValueChange={(code) => {
+                    setLocal((prev) => ({
+                      ...(prev as CrawlResponse),
+                      language: code || "en",
+                    }));
+                  }}
+                >
+                  <SelectTrigger className="w-[220px]">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {LANGUAGES.map((l) => (
+                      <SelectItem key={l.code} value={l.code}>
+                        <span className="mr-2">{l.flag}</span>
+                        {l.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
             <div className="flex justify-end gap-3 pt-2">
-              <button
-                type="button"
-                className="h-9 rounded-md border px-3 text-sm"
-                onClick={onClose}
-              >
+              <Button type="button" variant="outline" onClick={onClose}>
                 Close
-              </button>
-              <button
-                type="button"
-                className="h-9 rounded-md bg-primary px-3 text-sm text-primary-foreground"
-                onClick={onClose}
-              >
+              </Button>
+              <Button type="button" onClick={onClose}>
                 Continue
-              </button>
+              </Button>
             </div>
           </div>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
