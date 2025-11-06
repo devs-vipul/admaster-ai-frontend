@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import { StoreProvider } from "@/lib/store/StoreProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { TokenProvider } from "@/components/TokenProvider";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -26,9 +28,13 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider afterSignInUrl="/dashboard" afterSignUpUrl="/dashboard">
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
-          <StoreProvider>{children}</StoreProvider>
+          <ThemeProvider>
+            <TokenProvider>
+              <StoreProvider>{children}</StoreProvider>
+            </TokenProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

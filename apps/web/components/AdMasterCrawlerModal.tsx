@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useAuth } from "@clerk/nextjs";
 import { useCrawlBusinessMutation } from "@/lib/store/api/businessApi";
+import { useUpdateBrandMutation } from "@/lib/store/api/brandApi";
 import type { CrawlResponse } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,10 +32,12 @@ interface Props {
 
 export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
   const { getToken } = useAuth();
-  const [crawl, { isLoading }] = useCrawlBusinessMutation();
+  const [crawl, { isLoading: isCrawling }] = useCrawlBusinessMutation();
+  const [updateBrand, { isLoading: isSaving }] = useUpdateBrandMutation();
   const [result, setResult] = useState<CrawlResponse | null>(null);
   const [local, setLocal] = useState<CrawlResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -57,10 +60,35 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
     };
   }, [open, businessId, getToken, crawl]);
 
+  const handleSave = async () => {
+    if (!local) return;
+
+    setSaveError(null);
+    try {
+      await updateBrand({
+        businessId,
+        data: {
+          description: local.description,
+          logo_url: local.logo_url || null,
+          brand_colors: local.brand_colors,
+          tone_of_voice: local.tone_of_voice,
+          language: local.language,
+          is_complete: true,
+        },
+      }).unwrap();
+
+      onClose();
+    } catch (e: any) {
+      setSaveError(e?.message ?? "Failed to save brand information");
+    }
+  };
+
+  const isLoading = isCrawling || isSaving;
+
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="max-w-3xl">
-        {isLoading && !result ? (
+        {isCrawling && !result ? (
           <div className="py-12 text-center">
             <div className="mb-8 flex justify-center">
               <div className="relative">
@@ -120,9 +148,9 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
           </>
         )}
 
-        {error && (
+        {(error || saveError) && (
           <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded">
-            <p className="text-sm text-destructive">{error}</p>
+            <p className="text-sm text-destructive">{error || saveError}</p>
           </div>
         )}
 
@@ -189,7 +217,7 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
                         size="sm"
                         onClick={() => {
                           const next = local.brand_colors.filter(
-                            (_, i) => i !== idx,
+                            (_, i) => i !== idx
                           );
                           setLocal({ ...local, brand_colors: next });
                         }}
@@ -282,11 +310,16 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
             </div>
 
             <div className="flex justify-end gap-3 pt-2">
-              <Button type="button" variant="outline" onClick={onClose}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                disabled={isLoading}
+              >
                 Close
               </Button>
-              <Button type="button" onClick={onClose}>
-                Continue
+              <Button type="button" onClick={handleSave} disabled={isLoading}>
+                {isSaving ? "Saving..." : "Continue"}
               </Button>
             </div>
           </div>

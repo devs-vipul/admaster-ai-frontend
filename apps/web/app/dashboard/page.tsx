@@ -1,7 +1,7 @@
-import { UserButton } from "@clerk/nextjs";
 import { getUserDetails } from "@/lib/auth";
 import { DashboardRedirect } from "@/components/dashboard-redirect";
 import { DashboardCrawlGate } from "@/components/DashboardCrawlGate";
+import { DashboardLayout } from "@/components/DashboardLayout";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
@@ -13,62 +13,38 @@ export default async function DashboardPage() {
 
   return (
     <DashboardRedirect>
-      <div className="min-h-screen bg-background">
-        <header className="border-b">
-          <div className="container flex h-16 items-center justify-between px-4">
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold">AdMaster AI</h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                {user.email}
-              </span>
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: "h-10 w-10",
-                  },
-                }}
-              />
-            </div>
-          </div>
-        </header>
+      <DashboardLayout>
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold tracking-tight">
+            Welcome back, {user.firstName || "there"}! 👋
+          </h2>
+          <p className="text-muted-foreground mt-2">
+            Your AI-powered marketing automation dashboard
+          </p>
+        </div>
 
-        <main className="container px-4 py-8">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold tracking-tight">
-              Welcome back, {user.firstName || "there"}! 👋
-            </h2>
-            <p className="text-muted-foreground mt-2">
-              Your AI-powered marketing automation dashboard
+        {/* Dashboard content will go here */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="p-6 bg-card border rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">Your Businesses</h3>
+            <p className="text-sm text-muted-foreground">
+              Manage your onboarded businesses
             </p>
           </div>
-
-          {/* Dashboard content will go here */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <div className="p-6 bg-card border rounded-lg">
-              <h3 className="text-lg font-semibold mb-2">Your Businesses</h3>
-              <p className="text-sm text-muted-foreground">
-                Manage your onboarded businesses
-              </p>
-            </div>
-            <div className="p-6 bg-card border rounded-lg">
-              <h3 className="text-lg font-semibold mb-2">Active Campaigns</h3>
-              <p className="text-sm text-muted-foreground">
-                View your running ad campaigns
-              </p>
-            </div>
-            <div className="p-6 bg-card border rounded-lg">
-              <h3 className="text-lg font-semibold mb-2">Analytics</h3>
-              <p className="text-sm text-muted-foreground">
-                Track performance metrics
-              </p>
-            </div>
+          <div className="p-6 bg-card border rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">Active Campaigns</h3>
+            <p className="text-sm text-muted-foreground">
+              View your running ad campaigns
+            </p>
           </div>
-        </main>
-        {/* Modal is mounted separately through a client wrapper below */}
-        {/* Client portal handled in page client segment */}
-      </div>
+          <div className="p-6 bg-card border rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">Analytics</h3>
+            <p className="text-sm text-muted-foreground">
+              Track performance metrics
+            </p>
+          </div>
+        </div>
+      </DashboardLayout>
       <DashboardCrawlGate />
     </DashboardRedirect>
   );
