@@ -4,6 +4,7 @@ export const API_CONFIG = {
     // Business
     BUSINESSES: "/api/v1/businesses",
     CHECK_HAS_BUSINESS: "/api/v1/businesses/check/has-business",
+    BUSINESS_CRAWL: (id: string) => `/api/v1/businesses/${id}/crawl`,
 
     // Users
     USERS_ME: "/api/v1/users/me",
