@@ -189,7 +189,7 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
                         size="sm"
                         onClick={() => {
                           const next = local.brand_colors.filter(
-                            (_, i) => i !== idx
+                            (_, i) => i !== idx,
                           );
                           setLocal({ ...local, brand_colors: next });
                         }}
