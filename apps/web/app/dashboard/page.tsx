@@ -1,7 +1,8 @@
 import { UserButton } from "@clerk/nextjs";
 import { getUserDetails } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { DashboardRedirect } from "@/components/dashboard-redirect";
+import { DashboardCrawlGate } from "@/components/DashboardCrawlGate";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const user = await getUserDetails();
@@ -65,7 +66,10 @@ export default async function DashboardPage() {
             </div>
           </div>
         </main>
+        {/* Modal is mounted separately through a client wrapper below */}
+        {/* Client portal handled in page client segment */}
       </div>
+      <DashboardCrawlGate />
     </DashboardRedirect>
   );
 }

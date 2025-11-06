@@ -48,7 +48,7 @@ type BusinessFormValues = z.infer<typeof businessFormSchema>;
 export default function BusinessCreationPage() {
   const router = useRouter();
   const { getToken } = useAuth();
-  const [createBusiness, { isLoading: isSubmitting, isSuccess }] =
+  const [createBusiness, { isLoading: isSubmitting }] =
     useCreateBusinessMutation();
   const [error, setError] = useState<string | null>(null);
 
@@ -60,12 +60,6 @@ export default function BusinessCreationPage() {
     },
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      router.replace("/dashboard");
-    }
-  }, [isSuccess, router]);
-
   async function onSubmit(data: BusinessFormValues) {
     setError(null);
 
@@ -76,9 +70,15 @@ export default function BusinessCreationPage() {
         throw new Error("Authentication token not found");
       }
 
-      await createBusiness({ token, data }).unwrap();
+      const created = await createBusiness({ token, data }).unwrap();
 
-      router.replace("/dashboard");
+      const createdAny = created as any;
+      const id: string | undefined = createdAny?.id || createdAny?._id;
+      const target = id
+        ? `/dashboard?post-screen=onboarding&business-id=${id}`
+        : "/dashboard";
+
+      setTimeout(() => router.replace(target), 0);
     } catch (err) {
       console.error("Failed to create business:", err);
       setError(getErrorMessage(err));

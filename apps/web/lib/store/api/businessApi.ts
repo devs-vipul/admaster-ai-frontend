@@ -5,6 +5,7 @@ import type {
   BusinessFormData,
   BusinessListResponse,
   HasBusinessResponse,
+  CrawlResponse,
 } from "@/lib/types";
 
 const authHeaders = (token: string) => ({
@@ -62,7 +63,10 @@ export const businessApi = baseApi.injectEndpoints({
         ...authHeaders(token),
         body: data,
       }),
-      invalidatesTags: [{ type: "Business", id: "LIST" }],
+      invalidatesTags: [
+        { type: "Business", id: "LIST" },
+        { type: "Business" }, // Also invalidate has-business query
+      ],
     }),
 
     // Update business
@@ -94,6 +98,18 @@ export const businessApi = baseApi.injectEndpoints({
         { type: "Business", id: "LIST" },
       ],
     }),
+
+    // Run crawler for a business
+    crawlBusiness: builder.mutation<
+      CrawlResponse,
+      { token: string; id: string }
+    >({
+      query: ({ token, id }) => ({
+        url: API_CONFIG.ENDPOINTS.BUSINESS_CRAWL(id),
+        method: "POST",
+        ...authHeaders(token),
+      }),
+    }),
   }),
 });
 
@@ -105,4 +121,5 @@ export const {
   useCreateBusinessMutation,
   useUpdateBusinessMutation,
   useDeleteBusinessMutation,
+  useCrawlBusinessMutation,
 } = businessApi;
