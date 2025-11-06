@@ -33,14 +33,42 @@ const baseQueryWithAuth: BaseQueryFn<
 
   // If no token in args, try to get it from token getter
   if (!token) {
-    const getTokenFn = getTokenGetter();
+    let getTokenFn = getTokenGetter();
+
+    // Retry up to 3 times if token getter is not available
+    let retries = 0;
+    while (!getTokenFn && retries < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      getTokenFn = getTokenGetter();
+      retries++;
+    }
+
     if (getTokenFn) {
       try {
         token = (await getTokenFn()) || undefined;
+        if (token) {
+          console.log("Token retrieved successfully for API request");
+        } else {
+          console.warn(
+            "Token getter returned null - user may not be authenticated"
+          );
+        }
       } catch (error) {
         console.error("Failed to get token:", error);
       }
+    } else {
+      console.error(
+        "Token getter not available after retries - TokenProvider may not be initialized"
+      );
     }
+  }
+
+  // Debug: Log token status (only if no token)
+  if (!token) {
+    const url =
+      typeof args === "object" && "url" in args ? args.url : "unknown";
+    console.error("No auth token available for API request. URL:", url);
+    console.error("This will result in a 403 Forbidden error");
   }
 
   // If token is available, add it to headers

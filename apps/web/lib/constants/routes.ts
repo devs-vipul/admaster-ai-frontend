@@ -4,13 +4,16 @@
  */
 
 export const ROUTES = {
-  // Public routes
-  HOME: "/",
+  // Public routes (www)
+  WWW: "/www",
+  HOME: "/www",
   SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",
 
-  // Dashboard
-  DASHBOARD: "/dashboard",
+  // Dashboard (main app - root)
+  DASHBOARD: "/",
+  DASHBOARD_ROUTE: "/dashboard",
+  TIMELINE: "/timeline",
 
   // Business creation
   BUSINESS_CREATION: {
@@ -36,11 +39,35 @@ export const ROUTES = {
 
   // Monitoring
   MONITORING: {
-    DASHBOARD: "/monitoring/dashboard",
-    OPTIMIZER: "/monitoring/optimizer",
-    NOTIFICATIONS: "/monitoring/notifications",
-    BILLING: "/monitoring/billing",
-    ASSETS: "/monitoring/assets",
+    OPTIMIZER: "/optimizer",
+    NOTIFICATIONS: "/notifications",
+  },
+
+  // Billing (with submenus - requires business ID)
+  BILLING: {
+    BASE: (id: string) => `/business/${id}/settings/billing`,
+    CREDIT: (id: string) => `/business/${id}/settings/billing/credits`,
+    SUBSCRIPTIONS: (id: string) =>
+      `/business/${id}/settings/billing/subscriptions`,
+    PAYMENTS: (id: string) => `/business/${id}/settings/billing/payments`,
+  },
+
+  // Assets (with submenus - requires business ID)
+  ASSETS: {
+    BASE: (id: string) => `/business/${id}/assets`,
+    MEDIA_GALLERY: (id: string) => `/business/${id}/assets/media`,
+    COPYWRITING: (id: string) => `/business/${id}/assets/copywriting`,
+    CUSTOMER_DATA: (id: string) => `/business/${id}/assets/customer-lists`,
+    PRODUCT_LISTS: (id: string) => `/business/${id}/assets/customer-lists`,
+  },
+
+  // Settings (with submenus - requires business ID)
+  SETTINGS: {
+    BASE: (id: string) => `/business/${id}/settings`,
+    GENERAL: (id: string) => `/business/${id}/settings/general`,
+    INTEGRATIONS: (id: string) => `/business/${id}/settings/integrations`,
+    TEAM_MEMBERS: (id: string) => `/business/${id}/settings/team-members`,
+    CONVERSIONS: (id: string) => `/business/${id}/settings/conversions`,
   },
 } as const;
 

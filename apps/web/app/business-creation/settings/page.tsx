@@ -74,9 +74,7 @@ export default function BusinessCreationPage() {
 
       const createdAny = created as any;
       const id: string | undefined = createdAny?.id || createdAny?._id;
-      const target = id
-        ? `/dashboard?post-screen=onboarding&business-id=${id}`
-        : "/dashboard";
+      const target = id ? `/?post-screen=onboarding&business-id=${id}` : "/";
 
       setTimeout(() => router.replace(target), 0);
     } catch (err) {

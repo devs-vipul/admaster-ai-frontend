@@ -16,7 +16,8 @@ export const API_CONFIG = {
     // Brands
     BRAND_BY_BUSINESS: (id: string) => `/api/v1/brands/business/${id}`,
     UPDATE_BRAND: (id: string) => `/api/v1/brands/business/${id}`,
-    MARK_BRAND_COMPLETE: (id: string) => `/api/v1/brands/business/${id}/complete`,
+    MARK_BRAND_COMPLETE: (id: string) =>
+      `/api/v1/brands/business/${id}/complete`,
   },
   TIMEOUT: 30000, // 30 seconds
 } as const;

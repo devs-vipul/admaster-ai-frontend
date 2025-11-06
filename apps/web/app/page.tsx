@@ -1,41 +1,51 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { getUserDetails } from "@/lib/auth";
+import { DashboardRedirect } from "@/components/dashboard-redirect";
+import { DashboardCrawlGate } from "@/components/DashboardCrawlGate";
+import { DashboardLayout } from "@/components/DashboardLayout";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function DashboardPage() {
+  const user = await getUserDetails();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
-      <div className="text-center space-y-6 px-4">
-        <div className="space-y-2">
-          <h1 className="text-5xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
-            AdMaster AI
-          </h1>
-          <p className="text-2xl text-muted-foreground">
-            AI that thinks like a marketer
+    <DashboardRedirect>
+      <DashboardLayout>
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold tracking-tight">
+            Welcome back, {user.firstName || "there"}! 👋
+          </h2>
+          <p className="text-muted-foreground mt-2">
+            Your AI-powered marketing automation dashboard
           </p>
         </div>
 
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Generate, manage, and optimize ads across Google, Meta, LinkedIn, and
-          Microsoft Ads — automatically powered by AI.
-        </p>
-
-        <div className="flex gap-4 justify-center">
-          <Link href="/sign-up">
-            <Button size="lg">Get Started Free</Button>
-          </Link>
-          <Link href="/sign-in">
-            <Button variant="outline" size="lg">
-              Sign In
-            </Button>
-          </Link>
+        {/* Dashboard content will go here */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="p-6 bg-card border rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">Your Businesses</h3>
+            <p className="text-sm text-muted-foreground">
+              Manage your onboarded businesses
+            </p>
+          </div>
+          <div className="p-6 bg-card border rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">Active Campaigns</h3>
+            <p className="text-sm text-muted-foreground">
+              View your running ad campaigns
+            </p>
+          </div>
+          <div className="p-6 bg-card border rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">Analytics</h3>
+            <p className="text-sm text-muted-foreground">
+              Track performance metrics
+            </p>
+          </div>
         </div>
-
-        <div className="pt-8">
-          <p className="text-sm text-muted-foreground">
-            ✨ No credit card required • Start creating in minutes
-          </p>
-        </div>
-      </div>
-    </div>
+      </DashboardLayout>
+      <DashboardCrawlGate />
+    </DashboardRedirect>
   );
 }

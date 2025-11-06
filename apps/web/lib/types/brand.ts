@@ -19,4 +19,3 @@ export interface BrandUpdate {
   language?: string;
   is_complete?: boolean;
 }
-
