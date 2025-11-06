@@ -10,7 +10,7 @@ export function DashboardCrawlGate() {
   const postScreen = search.get("post-screen");
   const businessId = search.get("business-id");
   const [open, setOpen] = useState<boolean>(
-    postScreen === "onboarding" && Boolean(businessId)
+    postScreen === "onboarding" && Boolean(businessId),
   );
 
   useEffect(() => {
