@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +26,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { BUSINESS_SIZES, INDUSTRIES } from "@/lib/constants";
-import type { BusinessFormData } from "@/lib/types";
 import { useCreateBusinessMutation } from "@/lib/store/api/businessApi";
 import { getErrorMessage } from "@/lib/utils/errors";
 
@@ -95,7 +94,7 @@ export default function BusinessCreationPage() {
             </span>
           </h1>
           <p className="text-lg text-muted-foreground">
-            Let's set up your first business to get started
+            Let&apos;s set up your first business to get started
           </p>
         </div>
 

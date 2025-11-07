@@ -4,7 +4,7 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { ComingSoonPage } from "@/components/ComingSoonPage";
 
 export default function SettingsConversionsPage({
-  params,
+  params: _params,
 }: {
   params: { id: string };
 }) {

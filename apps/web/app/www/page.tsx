@@ -10,7 +10,6 @@ import {
   ArrowRight,
   TrendingUp,
   Users,
-  Globe,
   Shield,
 } from "lucide-react";
 
@@ -117,8 +116,8 @@ export default function HomePage() {
                 Why choose AdMaster AI?
               </h2>
               <p className="mb-8 text-lg text-muted-foreground">
-                We've built the platform that marketing teams actually want to
-                use. Simple, powerful, and designed for scale.
+                We&apos;ve built the platform that marketing teams actually want
+                to use. Simple, powerful, and designed for scale.
               </p>
               <div className="space-y-4">
                 {benefits.map((benefit, index) => (

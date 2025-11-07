@@ -33,8 +33,8 @@ export function ComingSoonPage({ title, description }: ComingSoonPageProps) {
 
         <div className="pt-4">
           <p className="text-sm text-muted-foreground mb-6">
-            This feature is coming soon. We're working hard to bring you the
-            best experience.
+            This feature is coming soon. We&apos;re working hard to bring you
+            the best experience.
           </p>
           <Button onClick={() => router.back()} variant="outline">
             Go Back
