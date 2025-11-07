@@ -14,7 +14,6 @@ import {
   Globe,
 } from "lucide-react";
 
-// Platform Integrations Data
 export const platforms = [
   {
     name: "Google Ads",
@@ -42,7 +41,6 @@ export const platforms = [
   },
 ];
 
-// Features Data
 export const features = [
   {
     icon: Zap,
@@ -80,7 +78,6 @@ export const features = [
   },
 ];
 
-// How It Works Data
 export const howItWorks = [
   {
     step: "01",
@@ -105,7 +102,6 @@ export const howItWorks = [
   },
 ];
 
-// Stats Data
 export const stats = [
   { value: 10000, suffix: "+", label: "Active Users" },
   { value: 50000000, suffix: "+", label: "Ads Generated" },
@@ -113,7 +109,6 @@ export const stats = [
   { value: 99.9, suffix: "%", label: "Uptime" },
 ];
 
-// Use Cases Data
 export const useCases = [
   {
     icon: Rocket,
@@ -145,7 +140,6 @@ export const useCases = [
   },
 ];
 
-// Testimonials Data
 export const testimonials = [
   {
     name: "Sarah Chen",
@@ -197,7 +191,6 @@ export const testimonials = [
   },
 ];
 
-// Benefits Data
 export const benefits = [
   {
     title: "Save 20+ hours per week",
@@ -217,14 +210,12 @@ export const benefits = [
   },
 ];
 
-// Dashboard Preview Stats
 export const dashboardStats = [
   { label: "Active Campaigns", value: "247", trend: "+12%" },
   { label: "Total Spend", value: "$45.2K", trend: "+8%" },
   { label: "ROI", value: "247%", trend: "+15%" },
 ];
 
-// Dashboard Integrations
 export const dashboardIntegrations = [
   { name: "Google", icon: "🔵", active: true },
   { name: "Meta", icon: "📘", active: true },
