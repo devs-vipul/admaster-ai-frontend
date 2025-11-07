@@ -114,7 +114,7 @@ export default function HomePage() {
               </span>
               <br />
               <span className="text-gray-300">automatically</span>
-            </h1>
+          </h1>
 
             <p
               className="mb-10 text-xl text-gray-400 sm:text-2xl max-w-3xl mx-auto leading-relaxed"
