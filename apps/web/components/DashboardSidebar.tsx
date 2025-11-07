@@ -56,38 +56,15 @@ export function DashboardSidebar() {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { isLoaded: authLoaded, userId } = useAuth();
-  const {
-    data: businessesData,
-    error,
-    isLoading,
-  } = useGetUserBusinessesQuery(undefined, {
-    skip: !authLoaded || !userId, // Skip query until auth is loaded and user is authenticated
+  const { data: businessesData } = useGetUserBusinessesQuery(undefined, {
+    skip: !authLoaded || !userId,
   });
 
-  // Debug: Log query state
-  useEffect(() => {
-    if (error) {
-      console.error("Businesses query error:", error);
-    }
-    if (isLoading) {
-      console.log("Loading businesses...", { authLoaded, userId });
-    }
-  }, [error, isLoading, authLoaded, userId]);
-
   const businesses = businessesData?.businesses || [];
-  const currentBusiness = businesses[0]; // For now, use first business
-  // Handle both id and _id from backend (backend uses _id, frontend expects id)
+  const currentBusiness = businesses[0];
   const businessId =
     currentBusiness?.id || (currentBusiness as any)?._id || undefined;
 
-  // Debug: Log to console
-  useEffect(() => {
-    console.log("Businesses Data:", businessesData);
-    console.log("Current Business:", currentBusiness);
-    console.log("Business ID:", businessId);
-  }, [businessesData, currentBusiness, businessId]);
-
-  // State for collapsible sections
   const billingPath = businessId ? ROUTES.BILLING.BASE(businessId) : "";
   const assetsPath = businessId ? ROUTES.ASSETS.BASE(businessId) : "";
   const settingsPath = businessId ? ROUTES.SETTINGS.BASE(businessId) : "";
@@ -106,25 +83,20 @@ export function DashboardSidebar() {
 
   const isActive = (href?: string) => {
     if (!href || !pathname) return false;
-    // For root path, only match exactly
     if (href === ROUTES.DASHBOARD) {
       return pathname === ROUTES.DASHBOARD;
     }
-    // For dashboard route, only match exactly
     if (href === ROUTES.DASHBOARD_ROUTE) {
       return pathname === ROUTES.DASHBOARD_ROUTE;
     }
-    // For other paths, check exact match or starts with the path followed by /
     return pathname === href || pathname.startsWith(href + "/");
   };
 
   const isSubmenuActive = (basePath: string) => {
     if (!pathname) return false;
-    // For billing, check if pathname includes /settings/billing
     if (basePath.includes("/settings/billing")) {
       return pathname.includes("/settings/billing");
     }
-    // For settings, check if pathname includes /settings but exclude /settings/billing
     if (
       basePath.includes("/settings") &&
       !basePath.includes("/settings/billing")
@@ -134,7 +106,6 @@ export function DashboardSidebar() {
         !pathname.includes("/settings/billing")
       );
     }
-    // For assets, check if pathname includes /assets
     if (basePath.includes("/assets")) {
       return pathname.includes("/assets");
     }
@@ -243,7 +214,7 @@ export function DashboardSidebar() {
             </div>
           </div>
 
-          {/* Billing Section with Expandable Submenus */}
+          {/* Billing Section */}
           <Collapsible open={billingOpen} onOpenChange={setBillingOpen}>
             <CollapsibleTrigger asChild>
               <Button
@@ -273,7 +244,7 @@ export function DashboardSidebar() {
                 )}
               </Button>
             </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-1 pl-4">
+            <CollapsibleContent className="space-y-1 pl-4 py-2">
               {businessId ? (
                 <>
                   <Link
@@ -326,7 +297,7 @@ export function DashboardSidebar() {
             </CollapsibleContent>
           </Collapsible>
 
-          {/* Assets Section with Expandable Submenus */}
+          {/* Assets Section */}
           <Collapsible open={assetsOpen} onOpenChange={setAssetsOpen}>
             <CollapsibleTrigger asChild>
               <Button
@@ -356,7 +327,7 @@ export function DashboardSidebar() {
                 )}
               </Button>
             </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-1 pl-4">
+            <CollapsibleContent className="space-y-1 pl-4 py-2">
               {businessId ? (
                 <>
                   <Link
@@ -409,7 +380,7 @@ export function DashboardSidebar() {
             </CollapsibleContent>
           </Collapsible>
 
-          {/* Settings Section with Expandable Submenus */}
+          {/* Settings Section  */}
           <Collapsible open={settingsOpen} onOpenChange={setSettingsOpen}>
             <CollapsibleTrigger asChild>
               <Button
@@ -439,7 +410,7 @@ export function DashboardSidebar() {
                 )}
               </Button>
             </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-1 pl-4">
+            <CollapsibleContent className="space-y-1 pl-4 py-2">
               {businessId ? (
                 <>
                   <Link
@@ -532,7 +503,7 @@ export function DashboardSidebar() {
         </nav>
       </div>
 
-      {/* Account Dropdown (Bottom) */}
+      {/* Account */}
       <div className="border-t p-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

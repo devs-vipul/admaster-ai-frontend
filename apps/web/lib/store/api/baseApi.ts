@@ -8,18 +8,15 @@ import {
 import { API_CONFIG } from "@/lib/config/api";
 import { getTokenGetter } from "@/components/TokenProvider";
 
-// Custom base query that automatically adds auth token
 const baseQueryWithAuth: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  // Get the base query
   const baseQuery = fetchBaseQuery({
     baseUrl: API_CONFIG.BASE_URL,
   });
 
-  // Try to get token from args first (for backward compatibility)
   let token: string | undefined;
 
   if (typeof args === "object" && "headers" in args) {
@@ -31,13 +28,12 @@ const baseQueryWithAuth: BaseQueryFn<
     }
   }
 
-  // If no token in args, try to get it from token getter
   if (!token) {
     let getTokenFn = getTokenGetter();
 
-    // Retry up to 3 times if token getter is not available
+    // Retry up to 10 times (1 second total) to wait for TokenProvider initialization
     let retries = 0;
-    while (!getTokenFn && retries < 3) {
+    while (!getTokenFn && retries < 10) {
       await new Promise((resolve) => setTimeout(resolve, 100));
       getTokenFn = getTokenGetter();
       retries++;
@@ -63,7 +59,6 @@ const baseQueryWithAuth: BaseQueryFn<
     }
   }
 
-  // Debug: Log token status (only if no token)
   if (!token) {
     const url =
       typeof args === "object" && "url" in args ? args.url : "unknown";
@@ -71,7 +66,6 @@ const baseQueryWithAuth: BaseQueryFn<
     console.error("This will result in a 403 Forbidden error");
   }
 
-  // If token is available, add it to headers
   if (token && typeof args === "object") {
     args = {
       ...args,
@@ -85,7 +79,6 @@ const baseQueryWithAuth: BaseQueryFn<
   return baseQuery(args, api, extraOptions);
 };
 
-// Base API slice - all other API slices will extend this
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithAuth,

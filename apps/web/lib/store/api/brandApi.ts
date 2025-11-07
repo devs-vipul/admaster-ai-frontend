@@ -4,7 +4,6 @@ import type { Brand, BrandUpdate } from "@/lib/types";
 
 export const brandApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Get brand by business ID
     getBrandByBusiness: builder.query<Brand, string>({
       query: (businessId) => ({
         url: API_CONFIG.ENDPOINTS.BRAND_BY_BUSINESS(businessId),
@@ -14,7 +13,6 @@ export const brandApi = baseApi.injectEndpoints({
       ],
     }),
 
-    // Update brand
     updateBrand: builder.mutation<
       Brand,
       { businessId: string; data: BrandUpdate }
@@ -30,7 +28,6 @@ export const brandApi = baseApi.injectEndpoints({
       ],
     }),
 
-    // Mark brand as complete
     markBrandComplete: builder.mutation<Brand, string>({
       query: (businessId) => ({
         url: API_CONFIG.ENDPOINTS.MARK_BRAND_COMPLETE(businessId),
@@ -44,7 +41,6 @@ export const brandApi = baseApi.injectEndpoints({
   }),
 });
 
-// Export hooks for usage in components
 export const {
   useGetBrandByBusinessQuery,
   useUpdateBrandMutation,

@@ -23,7 +23,7 @@ export default async function DashboardPage() {
           </p>
         </div>
 
-        {/* Dashboard content will go here */}
+        {/* Dashboard content  */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <div className="p-6 bg-card border rounded-lg">
             <h3 className="text-lg font-semibold mb-2">Your Businesses</h3>

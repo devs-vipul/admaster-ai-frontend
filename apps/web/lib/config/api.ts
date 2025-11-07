@@ -19,7 +19,7 @@ export const API_CONFIG = {
     MARK_BRAND_COMPLETE: (id: string) =>
       `/api/v1/brands/business/${id}/complete`,
   },
-  TIMEOUT: 30000, // 30 seconds
+  TIMEOUT: 30000,
 } as const;
 
 export const getApiUrl = (endpoint: string): string => {
