@@ -46,7 +46,7 @@ const baseQueryWithAuth: BaseQueryFn<
           console.log("Token retrieved successfully for API request");
         } else {
           console.warn(
-            "Token getter returned null - user may not be authenticated"
+            "Token getter returned null - user may not be authenticated",
           );
         }
       } catch (error) {
@@ -54,7 +54,7 @@ const baseQueryWithAuth: BaseQueryFn<
       }
     } else {
       console.error(
-        "Token getter not available after retries - TokenProvider may not be initialized"
+        "Token getter not available after retries - TokenProvider may not be initialized",
       );
     }
   }

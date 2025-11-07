@@ -8,7 +8,7 @@ import { API_CONFIG, getApiUrl } from "@/lib/config/api";
 
 export async function createBusiness(
   token: string,
-  data: BusinessFormData
+  data: BusinessFormData,
 ): Promise<Business> {
   const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.BUSINESSES), {
     method: "POST",
@@ -28,7 +28,7 @@ export async function createBusiness(
 }
 
 export async function checkHasBusiness(
-  token: string
+  token: string,
 ): Promise<HasBusinessResponse> {
   const response = await fetch(
     getApiUrl(API_CONFIG.ENDPOINTS.CHECK_HAS_BUSINESS),
@@ -36,7 +36,7 @@ export async function checkHasBusiness(
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
 
   if (!response.ok) {
@@ -47,7 +47,7 @@ export async function checkHasBusiness(
 }
 
 export async function getUserBusinesses(
-  token: string
+  token: string,
 ): Promise<BusinessListResponse> {
   const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.BUSINESSES), {
     headers: {

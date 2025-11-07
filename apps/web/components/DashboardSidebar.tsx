@@ -70,15 +70,15 @@ export function DashboardSidebar() {
   const settingsPath = businessId ? ROUTES.SETTINGS.BASE(businessId) : "";
 
   const [billingOpen, setBillingOpen] = useState(
-    pathname?.includes("/settings/billing") || false
+    pathname?.includes("/settings/billing") || false,
   );
   const [assetsOpen, setAssetsOpen] = useState(
-    pathname?.includes("/assets") || false
+    pathname?.includes("/assets") || false,
   );
   const [settingsOpen, setSettingsOpen] = useState(
     (pathname?.includes("/settings") &&
       !pathname?.includes("/settings/billing")) ||
-      false
+      false,
   );
 
   const isActive = (href?: string) => {
@@ -183,7 +183,7 @@ export function DashboardSidebar() {
               "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
               isActive(ROUTES.TIMELINE)
                 ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
             )}
           >
             <Zap className="h-4 w-4" />
@@ -204,7 +204,7 @@ export function DashboardSidebar() {
                     "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                     isActive(item.href)
                       ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                   )}
                 >
                   <item.icon className="h-4 w-4" />
@@ -223,7 +223,7 @@ export function DashboardSidebar() {
                   "w-full justify-between px-3 py-2 text-sm",
                   isSubmenuActive(billingPath)
                     ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                 )}
                 onClick={(e) => {
                   if (businessId && !billingOpen) {
@@ -253,7 +253,7 @@ export function DashboardSidebar() {
                       "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                       isActive(ROUTES.BILLING.CREDIT(businessId))
                         ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     )}
                   >
                     Credit
@@ -264,7 +264,7 @@ export function DashboardSidebar() {
                       "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                       isActive(ROUTES.BILLING.SUBSCRIPTIONS(businessId))
                         ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     )}
                   >
                     Subscriptions
@@ -275,7 +275,7 @@ export function DashboardSidebar() {
                       "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                       isActive(ROUTES.BILLING.PAYMENTS(businessId))
                         ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     )}
                   >
                     Payments
@@ -306,7 +306,7 @@ export function DashboardSidebar() {
                   "w-full justify-between px-3 py-2 text-sm",
                   isSubmenuActive(assetsPath)
                     ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                 )}
                 onClick={(e) => {
                   if (businessId && !assetsOpen) {
@@ -336,7 +336,7 @@ export function DashboardSidebar() {
                       "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                       isActive(ROUTES.ASSETS.MEDIA_GALLERY(businessId))
                         ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     )}
                   >
                     Media Gallery
@@ -347,7 +347,7 @@ export function DashboardSidebar() {
                       "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                       isActive(ROUTES.ASSETS.COPYWRITING(businessId))
                         ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     )}
                   >
                     Copywriting
@@ -358,7 +358,7 @@ export function DashboardSidebar() {
                       "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                       isActive(ROUTES.ASSETS.CUSTOMER_DATA(businessId))
                         ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     )}
                   >
                     Customer Lists
@@ -389,7 +389,7 @@ export function DashboardSidebar() {
                   "w-full justify-between px-3 py-2 text-sm",
                   isSubmenuActive(settingsPath)
                     ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                 )}
                 onClick={(e) => {
                   if (businessId && !settingsOpen) {
@@ -419,7 +419,7 @@ export function DashboardSidebar() {
                       "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                       isActive(ROUTES.SETTINGS.GENERAL(businessId))
                         ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     )}
                   >
                     General
@@ -430,7 +430,7 @@ export function DashboardSidebar() {
                       "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                       isActive(ROUTES.SETTINGS.INTEGRATIONS(businessId))
                         ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     )}
                   >
                     Integrations
@@ -441,7 +441,7 @@ export function DashboardSidebar() {
                       "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                       isActive(ROUTES.SETTINGS.TEAM_MEMBERS(businessId))
                         ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     )}
                   >
                     Team Members
@@ -452,7 +452,7 @@ export function DashboardSidebar() {
                       "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                       isActive(ROUTES.SETTINGS.CONVERSIONS(businessId))
                         ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        : "text-foreground hover:bg-accent hover:text-accent-foreground",
                     )}
                   >
                     Conversions
@@ -491,7 +491,7 @@ export function DashboardSidebar() {
                     "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                     isActive(item.href)
                       ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                   )}
                 >
                   <item.icon className="h-4 w-4" />
