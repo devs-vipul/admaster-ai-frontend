@@ -2,6 +2,12 @@
 
 import { CounterAnimation } from "@/components/CounterAnimation";
 import { PlatformLogo } from "@/components/PlatformLogo";
+import { PlatformCard } from "@/components/PlatformCard";
+import { FeatureCard } from "@/components/FeatureCard";
+import { UseCaseCard } from "@/components/UseCaseCard";
+import { BenefitItem } from "@/components/BenefitItem";
+import { HowItWorksItem } from "@/components/HowItWorksItem";
+import { StatItem } from "@/components/StatItem";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,7 +22,7 @@ import {
   testimonials,
   useCases,
 } from "@/lib/data/homepage";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   CheckCircle2,
@@ -27,17 +33,7 @@ import {
   TrendingUp,
   Zap,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-
 export default function HomePage() {
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden">
       {/* Animated Background Elements */}
@@ -317,39 +313,9 @@ export default function HomePage() {
           </div>
           <div className="mx-auto max-w-5xl">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {platforms.map((platform, i) => {
-                const ref = useRef(null);
-                const isInView = useInView(ref, {
-                  once: true,
-                  margin: "-50px",
-                });
-                return (
-                  <motion.div
-                    key={i}
-                    ref={ref}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: i * 0.1 }}
-                  >
-                    <Card className="group relative overflow-hidden border-purple-500/20 bg-slate-900/50 backdrop-blur-sm hover:border-purple-500/40 transition-all duration-300 hover:scale-105">
-                      <CardContent className="p-6 text-center">
-                        <div className="mb-4 h-16 w-16 mx-auto rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform p-3">
-                          <PlatformLogo
-                            name={platform.name.split(" ")[0]}
-                            className="h-full w-full"
-                          />
-                        </div>
-                        <h3 className="text-lg font-semibold text-white group-hover:text-purple-300 transition-colors mb-1">
-                          {platform.name}
-                        </h3>
-                        <p className="text-xs text-gray-400">
-                          {platform.description}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
+              {platforms.map((platform, i) => (
+                <PlatformCard key={i} platform={platform} index={i} />
+              ))}
             </div>
           </div>
         </div>
@@ -371,36 +337,9 @@ export default function HomePage() {
           </div>
 
           <div className="mx-auto grid max-w-7xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature, index) => {
-              const ref = useRef(null);
-              const isInView = useInView(ref, { once: true, margin: "-50px" });
-              return (
-                <motion.div
-                  key={index}
-                  ref={ref}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                >
-                  <Card className="group relative overflow-hidden border-purple-500/20 bg-slate-900/50 backdrop-blur-sm hover:border-purple-500/40 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20">
-                    <CardContent className="p-6">
-                      <div className="mb-4 relative">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-purple-400 group-hover:scale-110 transition-transform">
-                          <feature.icon className="h-7 w-7" />
-                        </div>
-                        <div className="absolute inset-0 bg-purple-500 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
-                      </div>
-                      <h3 className="mb-3 text-xl font-semibold text-white group-hover:text-purple-300 transition-colors">
-                        {feature.title}
-                      </h3>
-                      <p className="text-gray-400 leading-relaxed">
-                        {feature.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
+            {features.map((feature, index) => (
+              <FeatureCard key={index} feature={feature} index={index} />
+            ))}
           </div>
         </div>
       </section>
@@ -421,55 +360,14 @@ export default function HomePage() {
           </div>
           <div className="mx-auto max-w-6xl">
             <div className="grid md:grid-cols-3 gap-12 relative">
-              {howItWorks.map((item, i) => {
-                const ref = useRef(null);
-                const isInView = useInView(ref, {
-                  once: true,
-                  margin: "-50px",
-                });
-                return (
-                  <motion.div
-                    key={i}
-                    ref={ref}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: i * 0.2 }}
-                    className="relative group"
-                  >
-                    <Card className="relative border-purple-500/20 bg-slate-900/50 backdrop-blur-sm hover:border-purple-500/40 transition-all duration-300 h-full">
-                      <CardContent className="p-6">
-                        <div className="mb-4 flex items-center justify-between">
-                          <div className="text-4xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent opacity-20">
-                            {item.step}
-                          </div>
-                          <motion.div
-                            whileHover={{ scale: 1.1, rotate: 5 }}
-                            className="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center transition-transform"
-                          >
-                            <item.icon className="h-6 w-6 text-purple-400" />
-                          </motion.div>
-                        </div>
-                        <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-purple-300 transition-colors">
-                          {item.title}
-                        </h3>
-                        <p className="text-gray-400 leading-relaxed">
-                          {item.description}
-                        </p>
-                      </CardContent>
-                    </Card>
-                    {i < howItWorks.length - 1 && (
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={isInView ? { opacity: 1, x: 0 } : {}}
-                        transition={{ duration: 0.6, delay: i * 0.2 + 0.3 }}
-                        className="hidden md:block absolute top-1/2 -right-6 z-10"
-                      >
-                        <ArrowRight className="h-6 w-6 text-purple-400/50" />
-                      </motion.div>
-                    )}
-                  </motion.div>
-                );
-              })}
+              {howItWorks.map((item, i) => (
+                <HowItWorksItem
+                  key={i}
+                  item={item}
+                  index={i}
+                  isLast={i === howItWorks.length - 1}
+                />
+              ))}
             </div>
           </div>
         </div>
@@ -482,38 +380,9 @@ export default function HomePage() {
             <Card className="border-purple-500/20 bg-gradient-to-br from-slate-900/80 to-slate-950/80 backdrop-blur-xl overflow-hidden">
               <CardContent className="p-12">
                 <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
-                  {stats.map((stat, index) => {
-                    const ref = useRef(null);
-                    const isInView = useInView(ref, {
-                      once: true,
-                      margin: "-50px",
-                    });
-                    return (
-                      <motion.div
-                        key={index}
-                        ref={ref}
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={isInView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 0.6, delay: index * 0.1 }}
-                        className="text-center group cursor-pointer"
-                      >
-                        <motion.div
-                          whileHover={{ scale: 1.1 }}
-                          className="mb-3 text-5xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent transition-transform inline-block"
-                        >
-                          <CounterAnimation
-                            value={stat.value}
-                            suffix={stat.suffix}
-                            duration={2000}
-                            decimals={stat.value >= 1000 ? 1 : 0}
-                          />
-                        </motion.div>
-                        <div className="text-sm text-gray-400 font-medium uppercase tracking-wider">
-                          {stat.label}
-                        </div>
-                      </motion.div>
-                    );
-                  })}
+                  {stats.map((stat, index) => (
+                    <StatItem key={index} stat={stat} index={index} />
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -532,53 +401,15 @@ export default function HomePage() {
               Perfect for every marketing team
             </h2>
             <p className="text-lg text-gray-400">
-              Whether you're a startup or enterprise, we've got you covered
+              Whether you&apos;re a startup or enterprise, we&apos;ve got you
+              covered
             </p>
           </div>
           <div className="mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-6">
-              {useCases.map((useCase, i) => {
-                const ref = useRef(null);
-                const isInView = useInView(ref, {
-                  once: true,
-                  margin: "-50px",
-                });
-                return (
-                  <motion.div
-                    key={i}
-                    ref={ref}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: i * 0.1 }}
-                  >
-                    <Card className="group relative overflow-hidden border-purple-500/20 bg-slate-900/50 backdrop-blur-sm hover:border-purple-500/40 transition-all duration-300 hover:scale-[1.02]">
-                      <CardContent className="p-6">
-                        <div className="mb-4 flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <useCase.icon className="h-6 w-6 text-purple-400" />
-                          </div>
-                          <h3 className="text-xl font-semibold text-white group-hover:text-purple-300 transition-colors">
-                            {useCase.title}
-                          </h3>
-                        </div>
-                        <p className="text-gray-400 mb-4 leading-relaxed">
-                          {useCase.description}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {useCase.features.map((feature, j) => (
-                            <Badge
-                              key={j}
-                              className="bg-purple-500/10 text-purple-300 border-purple-500/30"
-                            >
-                              {feature}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
+              {useCases.map((useCase, i) => (
+                <UseCaseCard key={i} useCase={useCase} index={i} />
+              ))}
             </div>
           </div>
         </div>
@@ -629,7 +460,7 @@ export default function HomePage() {
                           ))}
                         </div>
                         <p className="text-gray-300 mb-4 leading-relaxed">
-                          "{testimonial.content}"
+                          &ldquo;{testimonial.content}&rdquo;
                         </p>
                         <div className="flex items-center gap-3">
                           <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center text-xl">
@@ -693,43 +524,9 @@ export default function HomePage() {
                 Simple, powerful, and designed to scale with your ambitions
               </motion.p>
               <div className="space-y-6">
-                {benefits.map((benefit, index) => {
-                  const ref = useRef(null);
-                  const isInView = useInView(ref, {
-                    once: true,
-                    margin: "-50px",
-                  });
-                  return (
-                    <motion.div
-                      key={index}
-                      ref={ref}
-                      initial={{ opacity: 0, x: -30 }}
-                      animate={isInView ? { opacity: 1, x: 0 } : {}}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      whileHover={{ x: 10 }}
-                      className="flex items-start gap-4 group cursor-pointer"
-                    >
-                      <motion.div
-                        whileHover={{ scale: 1.2, rotate: 360 }}
-                        transition={{ duration: 0.5 }}
-                        className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20"
-                      >
-                        <CheckCircle2 className="h-5 w-5 text-purple-400" />
-                      </motion.div>
-                      <div>
-                        <motion.h3
-                          whileHover={{ scale: 1.05 }}
-                          className="font-semibold text-white text-lg group-hover:text-purple-300 transition-colors"
-                        >
-                          {benefit.title}
-                        </motion.h3>
-                        <p className="text-gray-400 mt-1">
-                          {benefit.description}
-                        </p>
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                {benefits.map((benefit, index) => (
+                  <BenefitItem key={index} benefit={benefit} index={index} />
+                ))}
               </div>
             </motion.div>
 
