@@ -26,10 +26,9 @@ export const businessApi = baseApi.injectEndpoints({
     }),
 
     // Get all user businesses
-    getUserBusinesses: builder.query<BusinessListResponse, string>({
-      query: (token) => ({
+    getUserBusinesses: builder.query<BusinessListResponse, void>({
+      query: () => ({
         url: API_CONFIG.ENDPOINTS.BUSINESSES,
-        ...authHeaders(token),
       }),
       providesTags: (result) =>
         result
