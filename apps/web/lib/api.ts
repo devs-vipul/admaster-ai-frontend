@@ -1,7 +1,3 @@
-/**
- * API utilities for AdMaster AI Backend
- */
-
 import type {
   BusinessFormData,
   Business,
@@ -10,12 +6,9 @@ import type {
 } from "@/lib/types";
 import { API_CONFIG, getApiUrl } from "@/lib/config/api";
 
-/**
- * Create a new business
- */
 export async function createBusiness(
   token: string,
-  data: BusinessFormData,
+  data: BusinessFormData
 ): Promise<Business> {
   const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.BUSINESSES), {
     method: "POST",
@@ -34,11 +27,8 @@ export async function createBusiness(
   return response.json();
 }
 
-/**
- * Check if user has any business
- */
 export async function checkHasBusiness(
-  token: string,
+  token: string
 ): Promise<HasBusinessResponse> {
   const response = await fetch(
     getApiUrl(API_CONFIG.ENDPOINTS.CHECK_HAS_BUSINESS),
@@ -46,7 +36,7 @@ export async function checkHasBusiness(
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    },
+    }
   );
 
   if (!response.ok) {
@@ -56,11 +46,8 @@ export async function checkHasBusiness(
   return response.json();
 }
 
-/**
- * Get all user businesses
- */
 export async function getUserBusinesses(
-  token: string,
+  token: string
 ): Promise<BusinessListResponse> {
   const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.BUSINESSES), {
     headers: {

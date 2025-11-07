@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 
-// Global token getter function
 let getTokenFn: (() => Promise<string | null>) | null = null;
 
 export function setTokenGetter(fn: () => Promise<string | null>) {
@@ -19,7 +18,6 @@ export function TokenProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isLoaded && getToken) {
-      // Wrap getToken to ensure it's always available
       const tokenGetter = async () => {
         try {
           if (!userId) {
@@ -52,6 +50,5 @@ export function TokenProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isLoaded, getToken, userId]);
 
-  // Always render children - don't block rendering
   return <>{children}</>;
 }

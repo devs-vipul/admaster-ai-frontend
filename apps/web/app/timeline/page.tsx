@@ -20,7 +20,7 @@ export default async function TimelinePage() {
           </p>
         </div>
 
-        {/* Timeline content will go here */}
+        {/* Timeline content */}
         <div className="space-y-4">
           <div className="p-6 bg-card border rounded-lg">
             <h3 className="text-lg font-semibold mb-2">Getting Started</h3>

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useAuth } from "@clerk/nextjs";
 import { useCrawlBusinessMutation } from "@/lib/store/api/businessApi";
 import { useUpdateBrandMutation } from "@/lib/store/api/brandApi";
 import type { CrawlResponse } from "@/lib/types";
@@ -31,7 +30,6 @@ interface Props {
 }
 
 export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
-  const { getToken } = useAuth();
   const [crawl, { isLoading: isCrawling }] = useCrawlBusinessMutation();
   const [updateBrand, { isLoading: isSaving }] = useUpdateBrandMutation();
   const [result, setResult] = useState<CrawlResponse | null>(null);
@@ -43,9 +41,7 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
     let cancelled = false;
     async function run() {
       try {
-        const token = await getToken();
-        if (!token) throw new Error("No auth token");
-        const data = await crawl({ token, id: businessId }).unwrap();
+        const data = await crawl(businessId).unwrap();
         if (!cancelled) {
           setResult(data);
           setLocal(data);
@@ -58,7 +54,7 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [open, businessId, getToken, crawl]);
+  }, [open, businessId, crawl]);
 
   const handleSave = async () => {
     if (!local) return;
@@ -217,7 +213,7 @@ export function AdMasterCrawlerModal({ businessId, open, onClose }: Props) {
                         size="sm"
                         onClick={() => {
                           const next = local.brand_colors.filter(
-                            (_, i) => i !== idx,
+                            (_, i) => i !== idx
                           );
                           setLocal({ ...local, brand_colors: next });
                         }}

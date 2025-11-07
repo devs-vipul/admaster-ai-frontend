@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -46,7 +45,6 @@ type BusinessFormValues = z.infer<typeof businessFormSchema>;
 
 export default function BusinessCreationPage() {
   const router = useRouter();
-  const { getToken } = useAuth();
   const [createBusiness, { isLoading: isSubmitting }] =
     useCreateBusinessMutation();
   const [error, setError] = useState<string | null>(null);
@@ -63,13 +61,7 @@ export default function BusinessCreationPage() {
     setError(null);
 
     try {
-      const token = await getToken();
-
-      if (!token) {
-        throw new Error("Authentication token not found");
-      }
-
-      const created = await createBusiness({ token, data }).unwrap();
+      const created = await createBusiness(data).unwrap();
 
       const createdAny = created as any;
       const id: string | undefined = createdAny?.id || createdAny?._id;
@@ -124,7 +116,7 @@ export default function BusinessCreationPage() {
                     <FormLabel>Business Name *</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="e.g., Corider"
+                        placeholder="e.g., AdMaster AI"
                         {...field}
                         disabled={isSubmitting}
                       />
@@ -147,7 +139,7 @@ export default function BusinessCreationPage() {
                     <FormControl>
                       <Input
                         type="url"
-                        placeholder="https://corider.in"
+                        placeholder="https://admasterai.in"
                         {...field}
                         disabled={isSubmitting}
                       />
