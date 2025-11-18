@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { StoreProvider } from "@/lib/store/StoreProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { TokenProvider } from "@/components/TokenProvider";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -32,7 +33,10 @@ export default function RootLayout({
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
           <ThemeProvider>
             <TokenProvider>
-              <StoreProvider>{children}</StoreProvider>
+              <StoreProvider>
+                {children}
+                <Toaster />
+              </StoreProvider>
             </TokenProvider>
           </ThemeProvider>
         </body>

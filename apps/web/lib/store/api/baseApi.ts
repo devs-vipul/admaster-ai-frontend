@@ -7,6 +7,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { API_CONFIG } from "@/lib/config/api";
 import { getTokenGetter } from "@/components/TokenProvider";
+import { ApiError } from "@/lib/utils/error-handler";
 
 const baseQueryWithAuth: BaseQueryFn<
   string | FetchArgs,
@@ -46,7 +47,7 @@ const baseQueryWithAuth: BaseQueryFn<
           console.log("Token retrieved successfully for API request");
         } else {
           console.warn(
-            "Token getter returned null - user may not be authenticated",
+            "Token getter returned null - user may not be authenticated"
           );
         }
       } catch (error) {
@@ -54,7 +55,7 @@ const baseQueryWithAuth: BaseQueryFn<
       }
     } else {
       console.error(
-        "Token getter not available after retries - TokenProvider may not be initialized",
+        "Token getter not available after retries - TokenProvider may not be initialized"
       );
     }
   }
@@ -76,12 +77,68 @@ const baseQueryWithAuth: BaseQueryFn<
     };
   }
 
-  return baseQuery(args, api, extraOptions);
+  const result = await baseQuery(args, api, extraOptions);
+
+  // Transform error response to our format
+  if (result.error) {
+    const error = result.error as FetchBaseQueryError;
+
+    // If it's a fetch error (network error)
+    if (error.status === "FETCH_ERROR") {
+      return {
+        error: {
+          status: error.status,
+          data: {
+            error: {
+              message: "Network error. Please check your connection.",
+              code: "NETWORK_ERROR",
+              status_code: 0,
+            },
+          },
+        },
+      };
+    }
+
+    // If it's a parsed error response
+    if (error.status && typeof error.data === "object" && error.data !== null) {
+      // Check if it's already in our format
+      if ("error" in error.data) {
+        return {
+          error: {
+            status: error.status,
+            data: error.data as ApiError,
+          },
+        };
+      }
+
+      // Transform FastAPI error format to our format
+      if ("detail" in error.data) {
+        return {
+          error: {
+            status: error.status,
+            data: {
+              error: {
+                message:
+                  typeof error.data.detail === "string"
+                    ? error.data.detail
+                    : "An error occurred",
+                code: "API_ERROR",
+                status_code:
+                  typeof error.status === "number" ? error.status : 500,
+              },
+            },
+          },
+        };
+      }
+    }
+  }
+
+  return result;
 };
 
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithAuth,
-  tagTypes: ["Business", "User", "Brand"],
+  tagTypes: ["Business", "User", "Brand", "Campaign", "Platform"],
   endpoints: () => ({}),
 });

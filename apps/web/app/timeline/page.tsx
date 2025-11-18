@@ -1,22 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { DashboardRedirect } from "@/components/dashboard-redirect";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import {
-  resetForm,
-  setAdvertisingGoal,
-  nextStep,
-} from "@/lib/store/slices/campaignFormSlice";
-import { StepWebsiteUrl } from "@/components/campaign/StepWebsiteUrl";
-import { StepCampaignName } from "@/components/campaign/StepCampaignName";
-import { StepLanguage } from "@/components/campaign/StepLanguage";
-import { StepLocation } from "@/components/campaign/StepLocation";
-import { StepAdvertisingGoal } from "@/components/campaign/StepAdvertisingGoal";
+import { useGetUserBusinessesQuery } from "@/lib/store/api/businessApi";
 
 const TIMELINE_STEPS = [
   {
@@ -46,49 +36,17 @@ const TIMELINE_STEPS = [
 ];
 
 export default function TimelinePage() {
-  const dispatch = useAppDispatch();
-  const [showCampaignForm, setShowCampaignForm] = useState(false);
-  const { currentStep } = useAppSelector((state) => state.campaignForm);
-
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <StepAdvertisingGoal
-            onComplete={(data) => {
-              dispatch(setAdvertisingGoal(data.advertisingGoal));
-              dispatch(nextStep());
-            }}
-          />
-        );
-      case 2:
-        return <StepWebsiteUrl />;
-      case 3:
-        return <StepLanguage />;
-      case 4:
-        return <StepLocation />;
-      case 5:
-        return <StepCampaignName />;
-      default:
-        return (
-          <StepAdvertisingGoal
-            onComplete={(data) => {
-              dispatch(setAdvertisingGoal(data.advertisingGoal));
-              dispatch(nextStep());
-            }}
-          />
-        );
-    }
-  };
+  const router = useRouter();
+  const { data: businessesData } = useGetUserBusinessesQuery();
+  const currentBusiness = businessesData?.businesses?.[0];
+  const businessId = currentBusiness?.id || (currentBusiness as any)?._id;
 
   const handleCreateCampaign = () => {
-    dispatch(resetForm());
-    setShowCampaignForm(true);
-  };
-
-  const handleCloseCampaignForm = () => {
-    setShowCampaignForm(false);
-    dispatch(resetForm());
+    if (businessId) {
+      router.push(`/business/${businessId}/campaign/dynamic`);
+    } else {
+      console.error("No business found");
+    }
   };
 
   return (
@@ -100,92 +58,58 @@ export default function TimelinePage() {
             <h1 className="text-3xl font-bold mb-2">Getting started</h1>
           </div>
 
-          {/* Progress Bar - Only show when form is NOT open */}
-          {!showCampaignForm && (
-            <div className="flex items-center gap-4 max-w-4xl">
-              {TIMELINE_STEPS.map((step, index) => (
-                <div key={step.id} className="flex items-center flex-1">
-                  <div className="flex items-center gap-3 flex-1">
-                    {/* Step Circle */}
-                    <div
-                      className={`flex items-center justify-center h-8 w-8 rounded-full text-sm font-semibold ${
-                        step.status === "done"
-                          ? "bg-green-500 text-white"
-                          : step.status === "active"
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-300 text-gray-600"
-                      }`}
-                    >
-                      {step.status === "done" ? (
-                        <Check className="h-4 w-4" />
-                      ) : (
-                        step.id
-                      )}
-                    </div>
-
-                    {/* Step Label */}
-                    <span
-                      className={`text-sm font-medium ${
-                        step.status === "done"
-                          ? "line-through text-muted-foreground"
-                          : step.status === "active"
-                            ? "text-foreground"
-                            : "text-muted-foreground"
-                      }`}
-                    >
-                      {step.title}
-                    </span>
+          {/* Progress Bar */}
+          <div className="flex items-center gap-4 max-w-4xl">
+            {TIMELINE_STEPS.map((step, index) => (
+              <div key={step.id} className="flex items-center flex-1">
+                <div className="flex items-center gap-3 flex-1">
+                  {/* Step Circle */}
+                  <div
+                    className={`flex items-center justify-center h-8 w-8 rounded-full text-sm font-semibold ${
+                      step.status === "done"
+                        ? "bg-green-500 text-white"
+                        : step.status === "active"
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-300 text-gray-600"
+                    }`}
+                  >
+                    {step.status === "done" ? (
+                      <Check className="h-4 w-4" />
+                    ) : (
+                      step.id
+                    )}
                   </div>
 
-                  {/* Connector Line */}
-                  {index < TIMELINE_STEPS.length - 1 && (
-                    <div
-                      className={`h-0.5 flex-1 mx-2 ${
-                        step.status === "done" ? "bg-green-500" : "bg-gray-300"
-                      }`}
-                    />
-                  )}
+                  {/* Step Label */}
+                  <span
+                    className={`text-sm font-medium ${
+                      step.status === "done"
+                        ? "line-through text-muted-foreground"
+                        : step.status === "active"
+                          ? "text-foreground"
+                          : "text-muted-foreground"
+                    }`}
+                  >
+                    {step.title}
+                  </span>
                 </div>
-              ))}
-            </div>
-          )}
+
+                {/* Connector Line */}
+                {index < TIMELINE_STEPS.length - 1 && (
+                  <div
+                    className={`h-0.5 flex-1 mx-2 ${
+                      step.status === "done" ? "bg-green-500" : "bg-gray-300"
+                    }`}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
 
           {/* Main Content */}
-          <div
-            className={
-              showCampaignForm
-                ? "flex justify-center"
-                : "grid lg:grid-cols-2 gap-8"
-            }
-          >
-            {/* Left: Current Step Details or Form */}
-            {showCampaignForm ? (
-              <div className="space-y-6 w-full max-w-3xl">
-                {/* Progress Indicator */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-muted-foreground">
-                      Step {currentStep} of 5
-                    </span>
-                    <button
-                      onClick={handleCloseCampaignForm}
-                      className="text-sm text-muted-foreground hover:text-foreground"
-                    >
-                      Close
-                    </button>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary transition-all duration-300"
-                      style={{ width: `${(currentStep / 5) * 100}%` }}
-                    />
-                  </div>
-                </div>
-
-                {/* Form Step */}
-                <div>{renderStep()}</div>
-              </div>
-            ) : (
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Left: Current Step Details */}
+            <div>
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">
@@ -287,22 +211,20 @@ export default function TimelinePage() {
                   Create campaign
                 </Button>
               </div>
-            )}
+            </div>
 
-            {/* Right: Illustration - Only show when form is NOT open */}
-            {!showCampaignForm && (
-              <div className="flex items-center justify-center lg:justify-end">
-                <div className="relative w-full max-w-md aspect-square">
-                  <Image
-                    src="https://app.shown.io/static/webp/getting-started-step-illustration-campaign-BwF98fRk.webp"
-                    alt="Campaign creation illustration"
-                    fill
-                    className="object-contain"
-                    unoptimized
-                  />
-                </div>
+            {/* Right: Illustration */}
+            <div className="flex items-center justify-center lg:justify-end">
+              <div className="relative w-full max-w-md aspect-square">
+                <Image
+                  src="https://app.shown.io/static/webp/getting-started-step-illustration-campaign-BwF98fRk.webp"
+                  alt="Campaign creation illustration"
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
               </div>
-            )}
+            </div>
           </div>
         </div>
       </DashboardLayout>

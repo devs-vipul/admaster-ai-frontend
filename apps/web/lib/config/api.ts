@@ -1,5 +1,10 @@
+// Validate required environment variable
+if (!process.env.NEXT_PUBLIC_API_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL environment variable is required");
+}
+
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL,
   ENDPOINTS: {
     // Business
     BUSINESSES: "/api/v1/businesses",
@@ -18,6 +23,15 @@ export const API_CONFIG = {
     UPDATE_BRAND: (id: string) => `/api/v1/brands/business/${id}`,
     MARK_BRAND_COMPLETE: (id: string) =>
       `/api/v1/brands/business/${id}/complete`,
+
+    // Campaigns
+    CAMPAIGNS: "/api/v1/campaign/groups",
+    CAMPAIGN_CREATE: "/api/v1/campaign/groups/create",
+    CAMPAIGN_BY_ID: (id: string) => `/api/v1/campaign/groups/${id}`,
+
+    // Platforms
+    PLATFORMS: "/api/v1/platforms",
+    PLATFORM_BY_ID: (id: number) => `/api/v1/platforms/${id}`,
   },
   TIMEOUT: 30000,
 } as const;
