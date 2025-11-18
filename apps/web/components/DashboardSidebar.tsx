@@ -19,6 +19,7 @@ import {
   Sun,
   ChevronDown,
   ChevronRight,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Switch } from "@/components/ui/switch";
 import { useGetUserBusinessesQuery } from "@/lib/store/api/businessApi";
+import { useGetAllCampaignsQuery } from "@/lib/store/api/campaignApi";
 import { ROUTES } from "@/lib/constants/routes";
 import { useTheme } from "next-themes";
 import { useAuth } from "@clerk/nextjs";
@@ -47,7 +49,8 @@ const monitoringItems = [
   { label: "Notifications", icon: Bell, href: ROUTES.MONITORING.NOTIFICATIONS },
 ];
 
-const campaignItems = [
+// Static campaign items (will be combined with dynamic campaigns)
+const staticCampaignItems = [
   { label: "New Campaign", icon: Plus, href: ROUTES.CAMPAIGNS.NEW },
 ];
 
@@ -60,10 +63,24 @@ export function DashboardSidebar() {
     skip: !authLoaded || !userId,
   });
 
+  const { data: campaignsData } = useGetAllCampaignsQuery(undefined, {
+    skip: !authLoaded || !userId,
+  });
+
   const businesses = businessesData?.businesses || [];
   const currentBusiness = businesses[0];
   const businessId =
     currentBusiness?.id || (currentBusiness as any)?._id || undefined;
+
+  // Build dynamic campaign items from fetched campaigns
+  const campaignItems = [
+    ...staticCampaignItems,
+    ...(campaignsData?.campaign_groups?.map((campaign) => ({
+      label: campaign.title || `Campaign ${campaign.id}`,
+      icon: FileText,
+      href: ROUTES.CAMPAIGNS.DETAIL(campaign.id),
+    })) || []),
+  ];
 
   const billingPath = businessId ? ROUTES.BILLING.BASE(businessId) : "";
   const assetsPath = businessId ? ROUTES.ASSETS.BASE(businessId) : "";
@@ -483,21 +500,27 @@ export function DashboardSidebar() {
               Ad Campaigns
             </div>
             <div className="space-y-1">
-              {campaignItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href || "#"}
-                  className={cn(
-                    "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
-                    isActive(item.href)
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                  )}
-                >
-                  <item.icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
-              ))}
+              {campaignItems.length > 0 ? (
+                campaignItems.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href || "#"}
+                    className={cn(
+                      "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
+                      isActive(item.href)
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                ))
+              ) : (
+                <div className="px-3 py-2 text-sm text-muted-foreground">
+                  No campaigns yet
+                </div>
+              )}
             </div>
           </div>
         </nav>
